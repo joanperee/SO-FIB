@@ -1,0 +1,41 @@
+1. 
+# mknod mypipe p
+En el terminal 1: # cat > mypipe
+En el terminal 2: # cat < mypipe
+Els reads en el terminal 1 es fan write en el terminal 2.
+
+2. 
+No se puede comunicar dos terminales diferentes con una pipeline ya que está definida para un solo proceso.
+Sí se podría, por ejemplo, ejecutar # cat | cat
+
+3. 
+int main() {
+    // Cerrar la entrada estándar (canal 0)
+    close(STDIN_FILENO);
+
+    // Duplicar el descriptor de fichero 4 para que se convierta en la entrada estándar
+    if (dup(4) == -1) {
+        perror("dup");
+        return 1;
+    }
+
+    // Ahora, la entrada estándar está redirigida al descriptor 4
+    // Código aquí
+
+    // Opcionalmente podemos cerrar el descriptor de fichero 4 si no se necesitan más inputs
+    close(4);
+    return 0;
+}
+
+4. 
+    4.1. createSocket(char *socketId)
+        a > configura el socket local (PF_UNIX) i l'estructura sockaddr_un amb la seva adreça
+        b > syscall socket(AF_UNIX, SOCK_STREAM, 0) local orientat a connexió
+        c > syscall bind per associar el descriptor socket_fd amb la direcció socketAddr
+        d > syscall listen per esperar connexions amb el limit PENDINGCONNECTIONS
+        e > si no hi ha errors retorna el socket_fd
+    
+    4.2. serverConnection(int socket_fd)
+        a > altra vegada es crea una estructura sockaddr_un per emmagatzemar la direcció
+        b > syscall accept() espera una connexió entrant identificada amb socket_fd
+        c > si no hi ha errors retorna el descriptor del socket per la connexió acceptada

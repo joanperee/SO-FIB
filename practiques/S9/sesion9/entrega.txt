@@ -1,0 +1,44 @@
+Sesión 9. Joan Pere Ollers. G41 SO.
+
+70. Contestar a:
+
+• ¿Cual/es de los comandos anteriores han dado error al intentar ejecutarlos? Explica 
+por qué.
+    --> Ha dado error el comando $ ln $HOME/A $HOME/A/H ya que no se pueden hacer hard links a directorios.
+
+• Explica el resultado de ejecutar el comando “stat” utilizando como parámetro cada 
+uno de los nombres simbólicos que has creado anteriormente. 
+    --> D: arxiu que conté "este es el directorio A"
+        E: softlink apuntant al directori A
+        F: softlink apuntant a l'arxiu D 
+        G: hardlink a l'arxiu D
+
+
+• ¿Cuál sería el contenido de los ficheros D, E, F y G? Comenta las diferencias que 
+observas al utilizar los comandos “more” o “cat” para ver el contenido del fichero y 
+el resultado de utilizar el comando “readlink”. 
+    --> D: amb cat i more mostra el contingut "estoy en el directorio A"
+        E: cat dona error ja que és un softlink a un directori, readlink mostra la ruta
+        G i F: cat/more mostren el contingut i readlink mostra "D" i res, respectivament
+
+• Escribe en papel los accesos que se realizan cuando se accede a los ficheros: 
+“$HOME/A/F”, “$HOME/A/E” y “$HOME/A/G”. Ahora compáralos con el resultado 
+que obtienes cuando ejecutas el comando “namei” con cada uno de los ficheros 
+anteriores. ¿Si ejecutas “readlink $HOME/A/F” se realizan los mismos accesos? 
+¿Cómo influye el hecho de que en unos casos sea una ruta absoluta a un fichero y 
+en otros una ruta relativa? 
+    --> No. La ruta absoluta contiene el path desde la raíz del sistema de ficheros, 
+        mientras que la relativa solamente contiene "F" y asume que está dentro del 
+        mismo directorio
+
+• Crea un soft link de un fichero a si mismo (un fichero que no exista previamente). 
+Comenta el resultado de mirar su contenido utilizando el comando “cat”. Observa 
+como controla el sistema la existencia de ciclos en el sistema de ficheros. Ejecuta el 
+comando “namei” y comenta su resultado. 
+    --> Deixa fer-ho però no es pot consultar el contingut: cat: A: Too many levels of symbolic links
+
+71. Entrega del fichero append.c
+
+72. Entrega del fichero invirtiendo_fichero.c
+
+73. Entrega del fichero insertarx2.c

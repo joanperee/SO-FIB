@@ -1,0 +1,11 @@
+1. Quan s'executa ./ejercicio_exec 4, quina jerarquia de processos es crea?
+
+2. La funció hago_algo_de_trabajo() dura < 10s. Contesta:
+	a) Indica per cada procés quins missatges mostrarà per pantalla
+	b) Indica per cada procés quins signals rebrà
+	c) Com afecta a les respostes dels apartats anteriors passar les sentències de la reprogramació (línies 29-32) a la línia 23?
+
+3. La funció hago_algo_de_trabajo() dura > 10s. Contesta:
+	a) Indica per cada procés quins missatges mostrarà per pantalla
+	b) Indica per cada procés quins signals rebrà
+	c) Com afecta a les respostes dels apartats anteriors passar les sentències de la reprogramació (línies 29-32) a la línia 23?

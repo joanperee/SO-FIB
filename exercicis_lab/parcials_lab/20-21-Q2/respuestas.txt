@@ -1,0 +1,4 @@
+1. No podem garantir l'ordre, ja que els fills muten a touch concurrentment i el pare els espera a tots bloquejat.
+   Quan un fill mor cercam el fitxer que ha modificat, però no té perque ser el mateix ordre sempre.
+
+2.

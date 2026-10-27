@@ -1,0 +1,16 @@
+# Fitxers compilats de C/C++
+*.o
+*.obj
+*.out
+
+# Biblioteques compilades
+*.a
+*.so
+
+# Fitxers comprimits
+*.tar.gz
+*.tgz
+
+# Fitxers de còpia de seguretat
+*~
+*.bak

@@ -1,0 +1,148 @@
+PREVIO LAB S4 - Joan Pere Ollers
+
+_______________________________________________
+
+Alarm1:
+1. No sucede nada. La alarma está programada para terminar el proceso a los 10 segundos.
+
+2. Con el comando kill -kill pid el proceso termina y sale "Killed" por terminal
+
+3. La Shell se encarga de mostrar los mensajes por pantalla. También recoge el estado de 
+finalización, con la syscall waitpid.
+
+4. La llamada a sigsuspend hace que no sea necesario exit(1). Esto sucede porque sigsuspend espera a que SIGALARM mate el proceso.
+_______________________________________________
+
+Alarm2:
+1. Al hacer kill -alrm pid se envía una alarma manual independientemente de la programación que tenga en el código, en este caso 10 segundos.
+
+2. No. SIGKILL y SIGSTOP no se pueden tratar.
+
+3. La syscall alarm(seg) devuelve los segundos que quedan antes de ejecutarse. Se pueden ignorar los alarms externos tratando únicamente la alarm cuando devuelva 0, es decir, cuando se haya agotado su temporizador.
+_______________________________________________
+
+Alarm3:
+1. Lo reciben los dos. Comprobado usando kill -alrm y los pid de cada uno.
+_______________________________________________
+
+Alarm4:
+1. Al ejecutarse fork() el hijo crea el primer alarm. Luego padre e hijo entran en el bucle while, pero solo salta la alarma del hijo cada 10 segundos. Sin embargo, podemos provocar alarms externas que sí saltan para padre e hijo.
+_______________________________________________
+
+Waitpid:
+1, 2 y 3. Código de ejemplo_waitpid.c completo:
+#include <stdlib.h>
+#include <stdio.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+#include <string.h>
+#include <signal.h>
+#include <unistd.h>
+#include <errno.h>
+
+void error_y_exit (char *msg, int exit_status) {
+    perror(msg);
+    exit(exit_status);
+}
+
+void trata_alarma (int s) {
+    // Manejador vacío para tratar SIGALRM en hijos
+}
+
+int main (int argc, char *argv[]) {
+    int pid, res;
+    char buff[256];
+    int contador = 0;
+    int hijos = 0;
+    int hijos_pids[10];  // Array para almacenar pids de los hijos
+    struct sigaction sa;
+    sigset_t mask;
+
+    // Bloqueamos el SIGALRM fuera de sigsuspend
+    sigemptyset(&mask);
+    sigaddset(&mask, SIGALRM);
+    sigprocmask(SIG_BLOCK, &mask, NULL);
+
+    for (hijos = 0; hijos < 10; hijos++) {
+        sprintf(buff, "Creando el hijo numero %d\n", hijos);
+        write(1, buff, strlen(buff));
+
+        pid = fork();
+        if (pid == 0) {  // Código del hijo
+            sa.sa_handler = &trata_alarma;
+            sa.sa_flags = SA_RESTART;
+            sigfillset(&sa.sa_mask);
+
+            if (sigaction(SIGALRM, &sa, NULL) < 0)
+                error_y_exit("sigaction", 1);
+
+            // Mensaje del proceso hijo
+            sprintf(buff, "Hola, soy %d\n", getpid());
+            write(1, buff, strlen(buff));
+
+            // Configura alarma de 1 segundo para el hijo
+            alarm(1);
+            sigfillset(&mask);
+            sigdelset(&mask, SIGALRM);
+            sigdelset(&mask, SIGINT);
+            sigsuspend(&mask);  // Espera el SIGALRM o SIGINT
+
+            // Termina su ejecución
+            exit(0);
+        }
+        else if (pid < 0) {
+            // Error en el fork
+            error_y_exit("Error en el fork", 1);
+        }
+        else {
+            // Almacena el pid del hijo creado en el padre
+            hijos_pids[hijos] = pid;
+        }
+    }
+
+    // Configuración para el temporizador de espera de 2 segundos
+    int hijos_vivos = 10;
+    while (hijos_vivos > 0) {
+        alarm(2);  // Temporizador de espera máximo de 2 segundos
+
+        pid = waitpid(-1, &res, 0);
+        int tiempo_restante = alarm(0);  // Cancela la alarma y obtiene tiempo restante
+
+        if (pid > 0) {
+            // Mensaje al terminar un hijo y causa de finalización
+            if (WIFEXITED(res)) {
+                sprintf(buff, "Termina el proceso %d con exit status %d\n", pid, WEXITSTATUS(res));
+            }
+            else if (WIFSIGNALED(res)) {
+                sprintf(buff, "Termina el proceso %d por señal %d\n", pid, WTERMSIG(res));
+            }
+            write(1, buff, strlen(buff));
+
+            sprintf(buff, "Tiempo restante antes de la alarma: %d segundos\n", tiempo_restante);
+            write(1, buff, strlen(buff));
+
+            hijos_vivos--;
+            contador++;
+        }
+        else if (pid == -1 && errno == EINTR) {
+            // Se agotó el tiempo de espera de 2 segundos
+            sprintf(buff, "No se recibieron terminaciones en el tiempo máximo. Matando hijos restantes.\n");
+            write(1, buff, strlen(buff));
+
+            // Enviar SIGKILL a los hijos restantes
+            for (int i = 0; i < 10; i++) {
+                if (hijos_pids[i] != 0) {  // Si el hijo aún no ha terminado
+                    kill(hijos_pids[i], SIGKILL);
+                }
+            }
+            break;
+        }
+    }
+
+    sprintf(buff, "Valor del contador %d\n", contador);
+    write(1, buff, strlen(buff));
+    return 0;
+}
+
+
+

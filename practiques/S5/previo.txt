@@ -1,0 +1,28 @@
+1. 
+A través de nm podem accedir a la direcció de la següent variable:
+0000000000004014 B j
+
+Com que la j és una variable global la seva adreça és fixa. En canvi, 
+la variable i és local i per tant s'emmagatzema a una posició de la pila
+designada pel compilador (no la podem saber amb nm).
+
+Variables globals: .bss, .data
+Variables locals: stack
+
+00000000000011c9 T suma
+La funció suma es guarda a la secció T (text, el codi).
+
+OPCIONS:
+T: Secció de codi (Text), normalment una funció global.
+D: Secció de dades globals (Data), variable global inicialitzada.
+B: Secció BSS (dades no inicialitzades), variable global no inicialitzada.
+U: Símbol no definit en l'arxiu, però referenciat (normalment per una altra biblioteca o arxiu).
+d: Secció de dades per a una variable estàtica.
+t: Secció de codi per a una funció estàtica.
+W: Símbol feble, es pot sobrescriure o substituir per un altre en l'enllaç.
+w: Símbol feble per a una variable estàtica.
+V: Variable definida a la secció de dades com a global virtual
+____________________________________________________________________________________
+
+2. 
+gcc -o  mem1_previo_v2 mem1_previo_v2.c -static

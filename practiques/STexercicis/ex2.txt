@@ -1,0 +1,26 @@
+1. Dibuixa la jerarquia de procesos si s'executa
+	a) ./Mtarea 5 0
+		- Pare
+		   - F1
+		   - F2
+		   - F3
+                   - F4
+		   - F5
+
+	
+	b) ./Mtarea 5 1
+		El mateix que l'apartat anterior, però ara cada fill Fx té dos fills Fx-1 i Fx-2.
+
+
+2. Indica, per cada una de les execucions de l'apartat anterior
+	a) Serà suficient el tamany del vector de pids que hem reservat per gestionar els fills del proces inicial
+		- Per ./Mtarea 5 0 sí, ja que es reserva espai per 5 pids que son els 5 fills creats
+		- Per ./Mtarea 5 1 no, ja que ara es creen 5*2 = 10 fills, per tant s'hauria de fer sbrk(10*sizeof(int)).	
+	
+	b) Quins processos executen les línies 36+37?
+		- Només les executa el procés pare, ja que es fa espera bloquejant de la mort de tots els fills.
+
+	c) Quins processos executen la funció realizatarea?
+		- Tots els fills d'ambdues execucions.
+
+

@@ -1,0 +1,13 @@
+// PARCIAL LAB 2017/18 Q2
+
+1. Variable d'entorn PATH, inicialitzada al directori actual
+    a) Obrir un terminal
+    b) Configurar el shell: nano ~/.bashrc
+    c) Afegir a l'arxius: export PATH=".:$PATH"
+    d) Guardar els canvis
+
+
+2. Crear un directori i configurar permisos
+    a) Obrir un terminal
+    b) mkdir CLAB1
+    c) chmod 700 CLAB1 (permisos rwx només per l'usuari creador)

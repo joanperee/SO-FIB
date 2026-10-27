@@ -1,0 +1,48 @@
+LAB SISTEMES OPERATIUS.
+
+OJO!: líneas con "#" son comandos, no poner el carácter que los precede
+
+1. 
+mkdir S{1..5}
+
+2. 
+ver archivos: ls
+ver archivos incluyendo los ocultos: ls -a
+otras opciones: 
+	-l: información detallada
+	-lh: tamaño legible
+	-t: ordenación fecha modif
+	-r: invierte orden actual
+	-S: ordenación por tamaño de mayor a menor
+	-i: numero de inodo
+ejemplo: ls -lahS muestra todos los archivos, de forma detallada y legible, ordenados por tamaño.
+
+3. 
+ls -l
+Campos que se ven: permisos, hard links, propietario, grupo, tamaño, fecha/hora de última modificación y nombre del archivo.
+
+4. 
+"View as list"
+
+5. 
+rmdir S1	# quitar el directorio S1 que está vacío
+ls -la		# comprobar que S1 ya no está
+mkdir S1	# volver a crear el directorio S1
+
+6.
+cat: muestra todo el contenido por terminal (ideal para archivos pequeños)
+less: muestra el contenido de forma interactiva, por páginas y otras funciones (ideal para archivos grandes)
+
+7.
+-i hará que en caso de intentar copiar un archivo con un nombre que ya existe la Shell te pida confirmación (para evitar sobreescrituras involuntarias).
+#alias cp='cp -i'
+
+8. 
+#chmod ugo-r test
+#chmod ugo-x test
+#chmod ugo+w test
+Después de estos comandos, al ejecutar #cat obtenemos: cat: test: Permission denied
+#chmod ugo-w test
+#chmod ugo+r test
+Si se intenta borrar con #rm obtenemos: cannot remove 'test': Permission denied
+

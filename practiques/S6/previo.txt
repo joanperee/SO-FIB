@@ -1,0 +1,16 @@
+1. El path per accedir a la informació és: /proc/[pid]/stat
+Els camps (10) i (12) son minflt i majflt, respectivament, que sumats donen el #total de fallades.
+
+2. Amb la comanda vmstat 1 obtenim la informació cada segon (delay).
+A les columnes (7) i (8) es mostra la quantitat de si (swap-in) i so (swap-out).
+
+6. Temps d'execució de fibonacci:
+    n = 10 > 0.001s
+    n = 20 > 0.001s
+    n = 30 > 0.010s
+    n = 40 > 1.149s
+    n = 50 > 2min 20.872s
+
+7. El resultat d'executar dos programes fibonacci concurrents i background és:
+[1] 12.646 segons
+[2] 12.677 segons

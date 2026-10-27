@@ -1,0 +1,23 @@
+1.
+- Mediante el comando "df -T" podemos saber la información de los distintos "file systems" en nuestra máquina. De cada uno obtenemos su tipo (type), 
+el espacio total (1 K-blocks), el espacio en uso (Used), el espacio disponible (Available, en porcentaje también) y dónde está montado (mounted on).
+Por ejemplo: C:\       9p      999174140  279531536   719642604  28%   /mnt/c 
+
+- La información sobre inodos se encuentra con el comando "df -i"
+
+- El espacio disponible en un sistema de ficheros, como se ha comentado anteriormente, se obtiene con "df -T"
+
+2. 
+- hl_pr es un link fuerte a pr.txt, mientras que sl_pr es un link simbólico a pr.txt
+
+- pr.txt: inodo 2815, 2 links, regular_file
+  sl_txt: inodo 5681, 1 link, symbolic_file
+  hl_txt: inodo 2815, 2 links, regular_file
+
+- Si nos imaginamos los links como punteros, hl_txt y pr.txt tienen el mismo inodo
+(dos punteros a un mismo fichero). Entonces, si se borra pr.txt el contenido antiguo 
+aun se encuentra en hl_txt (sigue habiendo un puntero al contenido antiguo). Por el contrario,
+sl_pr es un link simbólico, por lo que no comparte el mismo inodo y si pr.txt se elimina
+también lo hace sl_pr.
+
+- Los 3 ficheros contienen "esto es una prueba" (si se elimina pr.txt solamente hl_pr tiene este contenido)

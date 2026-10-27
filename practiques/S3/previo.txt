@@ -1,0 +1,86 @@
+1. ejemplo_fork1
+Soy el proceso 6018
+Soy el proceso 6019
+
+A partir del fork() se crea un proceso hijo idéntico al proceso “pid” padre. Ambos ejecutan el mismo código, que es la salida por pantalla (6018 pid del padre y 6019 pid del hijo). La diferencia es que al llamar a getpid() obtenemos números distintos, pues cada proceso tiene un identificador único.
+
+2. ejemplo_fork2
+Antes del fork: Soy el proceso 8513
+PADRE: Soy el proceso 8513
+Los DOS: Soy el proceso 8513
+HIJO: Soy el proceso 8514
+Los DOS: Soy el proceso 8514
+
+Al ejecutar el programa hay un proceso padre (8513 en nuestro caso). Al hacer fork(), se crea otro proceso hijo que ejecuta simultáneamente el mismo código. Para el hijo fork()=pid=0 así que en el caso switch 0 sale por pantalla el pid del hijo. Contrariamente, para el padre fork()!=0 así que en el caso switch default sale por pantalla el pid del padre. Por último, tanto padre como hijo imprimen su pid en la sentencia write del final. 
+
+3. ejemplo_fork3
+Antes del fork: Soy el proceso 3784
+PADRE: Soy el proceso 3784
+Solo lo ejecuta el padre: Soy el proceso 3784
+HIJO: Soy el proceso 3785
+
+Al ejecutar el programa hay un proceso padre (3784 en nuestro caso). Al hacer fork(), se crea otro proceso hijo que ejecuta el mismo código. Para el hijo fork()=pid=0 así que en el caso switch 0 sale por pantalla el pid del hijo. Contrariamente, para el padre fork()!=0 así que en el caso switch default sale por pantalla el pid del padre. Por último tan solo el padre imprime su pid en la sentencia write del final.
+
+4. ejemplo_fork4
+Antes del fork: Soy el proceso 10596
+PADRE: Soy el proceso 10596
+Solo lo ejecuta el padre: Soy el proceso 10596
+HIJO: Soy el proceso 10597
+HIJO acaba: Soy el proceso 10597
+
+Orden:
+Antes del fork sale por pantalla el pid del padre
+Se ejecuta el caso default ya que pid!=0 (padre)
+Se ejecuta el write “Solo lo ejecuta el padre…”  y aquí el proceso padre termina
+Para el hijo, pid=0 así que se ejecuta el caso switch 0
+Durante el retraso que provoca el bucle for el proceso padre ha terminado
+Se ejecuta la segunda sentencia de escritura “HIJO acaba…”
+
+Añadimos la librería <sys/wait.h> y una instancia wait(NULL) justo antes de la línea “write (1, buffer, strlen (buffer));” para que el padre escriba la última frase solamente cuando el hijo haya terminado.
+
+5. ejemplo_fork5
+Antes del fork: Soy el proceso 4367
+PADRE: Soy el proceso 4367
+HIJO: Soy el proceso 4368
+HIJO:La variable_global vale A y la local a
+PADRE:La variable_global vale A y la local a
+Solo lo ejecuta el padre: Soy el proceso 4367
+
+Orden:
+Antes del fork sale por pantalla el pid del padre
+Se ejecuta el caso default ya que pid!=0 (padre)
+Para el hijo, pid=0 así que se ejecuta el caso switch 0
+Se ejecuta la segunda sentencia de escritura “HIJO: La variable_global vale…”
+Mientras el padre espera a que el hijo acabe
+El padre ejecuta la segunda sentencia de escritura “PDRE: La variable_global vale…”
+Se ejecuta el write “Solo lo ejecuta el padre…”  y aquí el proceso padre termina
+
+Añadimos las lineas de codigo “variable_global++;” y “variable_local++;” antes de “sprintf (buffer, "HIJO:La variable_global vale %c y la local %c\n", variable_global, variable_local);” y podemos comprobar como el hijo nos da como valores B y b respectivamente mientras que los valores que nos da el padre no han cambiado.
+
+
+6. ejemplo_fork6
+Antes del fork, sale por pantalla el pid del padre, luego se ejecuta el caso default ya que pid!=0 (padre). Tras esto, el padre y el hijo escriben varias veces de manera intercalada por pantalla el valor de la variable global.
+Empiezan por la letra B, el padre escribe repetidamente la letra en minúscula. Después, desde la B hasta la k, por cada letra  el hijo la escribe en mayúscula seguido del padre que lo hace en minúscula varias veces. Después, el padre repite varias veces que el valor de la variable global es k.
+Finalmente, se ejecuta el write “Solo lo ejecuta el padre…” y se nos da el pid del padre.
+
+No lo podemos asegurar porque el pid del padre cambia en cada nueva ejecución.
+
+7. ejemplo_fork7
+Modificamos la regla “all” añadiendo la dependencia ejemplo_fork7 y añadimos la regla para compilar el fichero:
+
+ejemplo_fork7:ejemplo_fork7.c
+	gcc -o ejemplo_fork7 ejemplo_fork7.c
+
+El fichero no compila porque variable_local solo es accesible desde la función int main(). Una variable local solo puede usarse en la función en la que se ha declarado, y esto no tiene nada que ver con los procesos.
+
+8. Ejecuta ejemplo_exec1
+Primero por pantalla el pid del proceso y luego sale por pantalla el resultado de hacer ls -l en consola.
+Solo aparece una vez el mensaje con el pid del proceso, esto se debe a que cuando se ejecuta el programa, el primer bloque imprime el mensaje con el pid del proceso. A continuación, “excelp()” reemplaza el proceso con el programa ls. Dado que “excelp()” solo retorna si hay un error, el segundo sprintf y write nunca se ejecutan si ls se ejecuta correctamente.
+
+9. Ejecuta ejemplo_exec2
+Aparece por pantalla el mensaje con el pid del proceso y el resultado de ejecutar “ejemplo_fork1”.
+Se ejecutan 3 procesos en total.
+
+10. Consultas en el manual
+Sección 2. System calls (functions provided by the kernel).
+Hemos consultado: fork, exit, wait (waitpid), exec (execl y execlp).
